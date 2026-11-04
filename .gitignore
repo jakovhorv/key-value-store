@@ -1,0 +1,13 @@
+.idea/
+*.iml
+
+out/
+*.class
+
+*.dat
+*.dat.tmp
+
+.DS_Store
+Thumbs.db
+
+*.log

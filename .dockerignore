@@ -1,0 +1,6 @@
+.idea/
+out/
+test/
+*.dat
+*.iml
+.git/
