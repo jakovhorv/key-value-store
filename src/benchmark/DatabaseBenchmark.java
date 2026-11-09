@@ -9,6 +9,7 @@ public class DatabaseBenchmark {
     public static void main(String[] args) throws Exception {
         int clients = 10;
         int operationsPerClient = 10_000;
+        long[] clientLatencies = new long[clients];
 
         ExecutorService executor = Executors.newFixedThreadPool(clients);
         CountDownLatch ready = new CountDownLatch(clients);
@@ -30,13 +31,21 @@ public class DatabaseBenchmark {
                         ready.countDown();
                         start.await();
 
+                        long totalLatency = 0;
+
                         for (int j = 0; j < operationsPerClient; j++) {
+                            long timePreOperation = System.nanoTime();
                             writer.println("SET client" + clientId + "_key" + j + " value" + j);
+
 
                             if (reader.readLine() == null) {
                                 throw new IOException("Server disconnected");
                             }
+
+                            totalLatency += System.nanoTime() - timePreOperation;
                         }
+
+                        clientLatencies[clientId] = totalLatency;
 
                     } catch (IOException | InterruptedException e) {
                         throw new RuntimeException(e);
@@ -60,6 +69,13 @@ public class DatabaseBenchmark {
             System.out.printf("Operations: %d%n", totalOperations);
             System.out.printf("Duration: %.3f seconds%n", seconds);
             System.out.printf("Throughput: %.0f ops/sec%n", totalOperations / seconds);
+            long totalLatencies = 0;
+            for(long element: clientLatencies)
+                totalLatencies += element;
+            double averageMs = totalLatencies / (double) totalOperations / 1_000_000;
+            System.out.printf("Avg operation latency: %.3f ms%n", averageMs);
+
+
 
         } finally {
             executor.shutdownNow();
