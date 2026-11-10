@@ -114,7 +114,9 @@ Where:
 #### Complexity: O(1)
 
 ## 5. Architecture
-   --diagram--
+<p align="center">
+  <img src="assets/kvs-diagram.svg">
+</p>
 
 ### Components
 - DatabaseServer - accepts TCP connections and dispatches clients to a fixed thread pool
@@ -168,11 +170,11 @@ The benchmarks measured:
 2. Average round-trip latency of each client’s operation
 
 ### Results
---show trhoughput graph--
+![](assets/throughput-vs-clients-chart.png)
 
 Throughput increased with concurrent clients. Scaling was sublinear overall.
 
---show latency graph--
+![](assets/latency-vs-clients-chart.png)
 
 Latency increased with concurrent clients.
 
